@@ -7,9 +7,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["TimeTeller/TimeTeller.csproj", "TimeTeller/"]
+COPY ["src/TimeTeller/TimeTeller.csproj", "TimeTeller/"]
 RUN dotnet restore "TimeTeller/TimeTeller.csproj"
-COPY . .
+COPY ./src .
 WORKDIR "/src/TimeTeller"
 RUN dotnet build "TimeTeller.csproj" -c Release -o /app/build
 

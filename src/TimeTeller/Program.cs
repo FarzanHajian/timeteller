@@ -1,6 +1,4 @@
 using Serilog;
-using Serilog.Events;
-using System.Diagnostics;
 using System.Reflection;
 
 // Setting Serilog up.

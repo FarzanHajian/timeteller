@@ -17,6 +17,7 @@ FROM build AS publish
 RUN dotnet publish "TimeTeller.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
+ENV ASPNETCORE_URLS=http://0.0.0.0:80
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "TimeTeller.dll"]

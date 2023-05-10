@@ -1,0 +1,28 @@
+--- 
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: development
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timeserver-deployment
+  namespace: development
+  labels:
+    app: timeteller
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: timeteller
+  template:
+    metadata:
+      labels:
+        app: timeteller
+    spec:
+      containers:
+      - name: timeteller-container
+        image: fh791/timeteller:latest
+        ports:
+        - containerPort: 80

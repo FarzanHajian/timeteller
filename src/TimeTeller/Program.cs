@@ -36,6 +36,7 @@ try
     }
     app.UseHttpsRedirection();
     app.MapControllers();
+    app.MapFallback(r => r.Response.WriteAsync("(: TimeTeller is running :)"));
     app.Run();
 }
 catch (Exception ex)

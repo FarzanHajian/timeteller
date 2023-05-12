@@ -1,5 +1,6 @@
 ﻿using LiteDB;
 using Microsoft.AspNetCore.Mvc;
+using TimeTeller.Services;
 
 namespace TimeTeller.Controllers;
 
@@ -8,15 +9,19 @@ namespace TimeTeller.Controllers;
 public class AdminController : ControllerBase
 {
     private readonly IConfiguration configuration;
+    private readonly RabbitMQService rabbitService;
 
-    public AdminController(IConfiguration configuration)
+    public AdminController(IConfiguration configuration, RabbitMQService rabbitService)
     {
         this.configuration = configuration;
+        this.rabbitService = rabbitService;
     }
 
     [HttpGet("logs")]
     public string GetLogs()
     {
+        rabbitService.PublishEndpointCalledMessage("GetLogs", HttpContext.Connection.RemoteIpAddress!);
+
         var database = configuration["Serilog:WriteTo:1:Args:databaseUrl"];
         var collectionName = configuration["Serilog:WriteTo:1:Args:logCollectionName"];
 

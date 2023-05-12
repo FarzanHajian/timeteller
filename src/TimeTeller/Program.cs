@@ -1,5 +1,6 @@
 using Serilog;
 using System.Reflection;
+using TimeTeller.Services;
 
 // Setting Serilog up.
 var configuration = new ConfigurationBuilder()
@@ -24,6 +25,7 @@ try
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddScoped<RabbitMQService>();
 
     var app = builder.Build();
 

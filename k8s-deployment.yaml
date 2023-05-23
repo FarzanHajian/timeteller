@@ -7,7 +7,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: timeserver-deployment
+  name: timeteller-deployment
   namespace: development
   labels:
     app: timeteller
@@ -24,8 +24,31 @@ spec:
       containers:
       - name: timeteller-container
         image: fh791/timeteller:latest
+        env:
+        - name: RabbitMQ__ConnectionString
+          value: amqp://rabbitmq:rabbitmq@rabbitmq-service #.development.svc.cluster.local
         ports:
-        - containerPort: 80
+        - name: application
+          containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+  namespace: development
+  labels:
+    app: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
       - name: rabbitmq-container
         image: rabbitmq:management-alpine
         env:
@@ -33,22 +56,42 @@ spec:
           value: rabbitmq
         - name: RABBITMQ_DEFAULT_PASS
           value: rabbitmq
-      ports:
-        - containerPort: 15672
-        - containerPort: 5671
-        - containerPort: 5672
+        ports:
+        - name: rabbitmq-ui
+          containerPort: 15672
+        - name: rabbitmq1
+          containerPort: 5671
+        - name: rabbitmq2
+          containerPort: 5672
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: timteller-service
+  name: timeteller-service
   namespace: development
 spec:
   selector:
     app: timeteller
   ports:
-    - port: 80              # Application
-      targetPort: 80
-    - port: 15672           # RabbitMQ Management UI
-      targetPort: 15672
+  - name: application-port
+    port: 80
+    targetPort: application
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+  namespace: development
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+  - name: rabbitmq-ui-port
+    port: 8080
+    targetPort: rabbitmq-ui
+  - name: rabbitmq1-port
+    port: 5671
+  - name: rabbitmq2-port
+    port: 5672
   type: LoadBalancer

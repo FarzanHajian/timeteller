@@ -12,7 +12,13 @@ public class RabbitMQService
     public RabbitMQService(IConfiguration configuration)
     {
         exchange = configuration["RabbitMQ:Exchange"]!;
-        factory = new ConnectionFactory { Uri = new Uri(configuration["RabbitMQ:ConnectionString"]!) };
+
+        factory = new ConnectionFactory
+        {
+            HostName = configuration["RabbitMQ:HostName"]!,
+            UserName = configuration["RabbitMQ:UserName"]!,
+            Password = configuration["RabbitMQ:Password"]!
+        };
     }
 
     public void PublishEndpointCalledMessage(string endpointName, IPAddress remoteAddress)

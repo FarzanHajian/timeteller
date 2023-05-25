@@ -25,8 +25,12 @@ spec:
       - name: timeteller-container
         image: fh791/timeteller:latest
         env:
-        - name: RabbitMQ__ConnectionString
-          value: amqp://rabbitmq:rabbitmq@rabbitmq-service #.development.svc.cluster.local
+        - name: RabbitMQ__HostName
+          value: rabbitmq-service #.development.svc.cluster.local
+        - name: RabbitMQ__UserName
+          value: rabbitmq
+        - name: RabbitMQ__Password
+          value: rabbitmq
         ports:
         - name: application
           containerPort: 80

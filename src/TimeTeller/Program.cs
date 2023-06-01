@@ -1,3 +1,5 @@
+using App.Metrics.AspNetCore;
+using App.Metrics.Formatters.Prometheus;
 using Serilog;
 using System.Reflection;
 using TimeTeller.Services;
@@ -22,6 +24,14 @@ try
 
     // Service registrations.
     builder.Host.UseSerilog();
+    builder.Host.UseMetrics(options =>
+    {
+        options.EndpointOptions = epo =>
+        {
+            epo.MetricsEndpointOutputFormatter = new MetricsPrometheusProtobufOutputFormatter();
+            epo.MetricsTextEndpointOutputFormatter = new MetricsPrometheusTextOutputFormatter();
+        };
+    });
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
